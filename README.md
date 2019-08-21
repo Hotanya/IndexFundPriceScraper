@@ -1,9 +1,17 @@
-# IndexFundPriceScraper
+# ShareScraper
 
-Wrote a scraper using Python to get the current values for the following funds:
+Due to InvestNow having abysmal portfolio tracking, decided to write a scraper to get the current values for a couple of index funds.
+
+Currently retreives the following:
 
 * Australasian Property Index Fund
 * Vanguard International Shares Select Exclusions Index Fund
 * NZ Shares Index Fund
 
-Displays your current portfolio value based on fortnightly contributions made to the funds. 
+Have hardcoded a whole bunch of stuff to suit my needs e.g. the fortnightly contribution
+
+Future Ideas/To-Do's
+
+* Turn into an api for ease of use
+* Add functionality to retrieve some historical data to make fancy graphs
+* Mobile App????
