@@ -1,17 +1,13 @@
+from flask import render_template
 import flask
-import sys
-
-sys.path.insert(0,'C:/Users/hotan/Documents/GitHub/ShareScraper/api')
-#from ShareScraper import CurrentPortfolioValue
+import connexion
 import ShareScraper
 
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
-
+app = connexion.App(__name__, specification_dir='./')
+app.add_api('swagger.yaml')
 
 @app.route('/', methods=['GET'])
 def home():
-    value = ShareScraper.CurrentPortfolioValue()
-    return str(value)
+    return render_template('home.html')
 
-app.run()
+app.run(debug=True)
