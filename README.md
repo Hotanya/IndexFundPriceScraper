@@ -12,6 +12,7 @@ Have hardcoded a whole bunch of stuff to suit my needs e.g. the fortnightly cont
 
 Future Ideas/To-Do's
 
-* Turn into an api for ease of use
+* ~~ Turn into an api for ease of use~~
+* Make front end 
 * Add functionality to retrieve some historical data to make fancy graphs
 * Mobile App????
