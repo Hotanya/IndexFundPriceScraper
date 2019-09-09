@@ -4,16 +4,22 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import date, timedelta
 import datetime
+import json
 
 #sets a user-agent    
-example_headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'} #can make this better by having a list of random header
+example_headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/52.0',
+'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+'Accept-Language': 'en-US,en;q=0.5',
+'Accept-Encoding': 'gzip, deflate, br'} #can make this better by having a list of random header
 
 
 #vanguard
-vanguard = requests.get("https://www.bloomberg.com/quote/VAN1579:AU",headers=example_headers) #need to have headers to avoid being blocked
-soup = BeautifulSoup(vanguard.content, 'html.parser')
-vanguard_price = soup.find_all("span", class_ = 'priceText__1853e8a5')[0].get_text()
-#print("Vanguard Price:\n" + vanguard_price+"AUD")
+vanguard = requests.get("https://api.vanguard.com/rs/gre/gra/1.7.0/datasets/auw-retail-prices-data-mf.jsonp?vars=portId:8125&path=[portId=8125][0]",headers=example_headers).text #need to have headers to avoid being blocked
+nocallback = vanguard.replace('callback(','') #removed the callback( that it returns. we just need the json
+final = nocallback.replace(')','') #removes the ) at the end
+parsejson=json.loads(final) #parses it as json
+vanguard_price = parsejson["price"] #retrieves the price
+print("Vanguard Price:\n" + str(vanguard_price)+"AUD")
 
 #AMP Capital NZ Index 
 ampnzshares = requests.get("https://www.ampcapital.com/nz/en/investments/funds/index-funds/nz-shares-index-fund",headers=example_headers) #need to have headers to avoid being blocked
@@ -28,12 +34,12 @@ ampAustralianProperty_price = soup2.find_all("div", class_ = 'ht-module_title ht
 #print("AMP Capital Australisian Property Index Fund:\n" + ampAustralianProperty_price+"NZD")
 
 def CurrentPortfolioValue():
-    initial_porfolio_price = float (100)
-    initial_date = date(2018, 8, 19) #set the initial date to a date where the fortnightly payment has gone
-    num_of_shares_vanguard = float(500)
-    num_of_shares_AMPNZShares = float(300)
-    num_of_shares_AMPAustralisianProperty = float(100)
-    fortnightly_contrib = float(100)
+    initial_porfolio_price = float (2863.03)
+    initial_date = date(2019, 9, 9) #set the initial date to a date where the fortnightly payment has gone
+    num_of_shares_vanguard = float(1177.0900)
+    num_of_shares_AMPNZShares = float(648.8300)
+    num_of_shares_AMPAustralisianProperty = float(123.2400)
+    fortnightly_contrib = float(100.00)
     current_value = initial_porfolio_price
     #print(initial_date)
 
@@ -44,9 +50,11 @@ def CurrentPortfolioValue():
 
     count = days_difference
     while count > 14: #while difference is less than 14 days i.e forntightly payment hasnt been made
-        current_value += initial_porfolio_price + (float(50) * float(vanguard_price)) + (float(50) * float(ampnzshares_price))
+        #current_value += initial_porfolio_price + (float(50) * float(vanguard_price)) + (float(50) * float(ampnzshares_price))
+        num_of_shares_vanguard = num_of_shares_vanguard + (float(50)/float(vanguard_price))
+        num_of_shares_AMPNZShares = num_of_shares_AMPNZShares + (float(50)/float(ampnzshares_price))
         count = count - 14
-    print("Current Portfolio value is $" + str(current_value))
+    print("Current Portfolio value is $" + str(current_value)+'AUD')
     return current_value
 
 CurrentPortfolioValue() #retrieves current portfolio value
